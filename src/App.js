@@ -2,6 +2,26 @@ import './App.css';
 import React from 'react';
 import Customer from './components/Customer';
 
+import { Paper } from '@material-ui/core';
+
+import { Table } from '@material-ui/core';
+import { TableHead } from '@material-ui/core';
+import { TableBody } from '@material-ui/core';
+import { TableRow } from '@material-ui/core';
+import { TableCell } from '@material-ui/core';
+
+import { withStyles } from '@material-ui/styles';
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    overflowX: 'auto'
+  },
+  table: {
+    minWidth:1080
+  }
+})
+
 const customers = [
   {
     'id' : 1,
@@ -29,23 +49,40 @@ const customers = [
 
 class App extends React.Component {
   render() {
+    const { classes } = this.props;
     return (
-      <div>
-        { customers.map(c => {
-            return(
-              <Customer key={c.id}
-                id={c.id}
-                img={c.img}
-                name={c.name}
-                birth={c.birth}
-                gender={c.gender}
-                job={c.job}
-              />
-            );
-          }) }
-      </div>
+      <Paper className={classes.root}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>번호</TableCell>
+              <TableCell>사진</TableCell>
+              <TableCell>이름</TableCell>
+              <TableCell>생년월일</TableCell>
+              <TableCell>성별</TableCell>
+              <TableCell>직업</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+          { customers.map(c => (
+            <TableRow key={c.id}>
+              <TableCell>{c.id}</TableCell>
+              <TableCell>{c.img}</TableCell>
+              <TableCell>{c.name}</TableCell>
+              <TableCell>{c.birth}</TableCell>
+              <TableCell>{c.gender}</TableCell>
+              <TableCell>{c.job}</TableCell>
+                {/* <Customer key={c.id}
+                  id={c.id} img={c.img} name={c.name} birth={c.birth} gender={c.gender} job={c.job}
+                /> */}
+            </TableRow>
+          )) }
+            </TableBody>
+          </Table>
+      </Paper>
     )
   }
 }
 
-export default App;
+export default withStyles(styles) (App);
