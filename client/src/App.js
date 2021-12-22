@@ -22,32 +22,28 @@ const styles = theme => ({
   }
 })
 
-const customers = [
-  {
-    'id' : 1,
-    'img' : 'https://placeimg.com/64/64/1',
-    'name' : '홍길동',
-    'birth' : '920523',
-    'gender' : '남자',
-    'job' : '대학생'
-  }, {
-    'id' : 2,
-    'img' : 'https://placeimg.com/64/64/2',
-    'name' : '이순신',
-    'birth' : '820523',
-    'gender' : '남자',
-    'job' : '직장인'
-  }, {
-    'id' : 3,
-    'img' : 'https://placeimg.com/64/64/3',
-    'name' : '강감찬',
-    'birth' : '720523',
-    'gender' : '남자',
-    'job' : '프리랜서'
-  },
-]
-
 class App extends React.Component {
+
+  // 서버에 접속해서 데이터 가져오기
+  // state는 React.Component 내에서 변경될 수 있는 변수를 처리하고자 할 때 사용
+  state = {
+    customers: ""
+  }
+
+  // api 서버에 접근하여 데이터를 받아오는 작업은 componentDidMount 함
+  // 모든 컴포넌트가 mount가 완료되었을때 실행됨.
+  componentDidMount() {
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err));
+  }
+
+  callApi = async() => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -65,7 +61,7 @@ class App extends React.Component {
           </TableHead>
 
           <TableBody>
-          { customers.map(c => (
+          { this.state.customers ? this.state.customers.map(c => (
             <TableRow key={c.id}>
               <TableCell>{c.id}</TableCell>
               <TableCell>{c.img}</TableCell>
@@ -77,7 +73,7 @@ class App extends React.Component {
                   id={c.id} img={c.img} name={c.name} birth={c.birth} gender={c.gender} job={c.job}
                 /> */}
             </TableRow>
-          )) }
+          )) : ""}
             </TableBody>
           </Table>
       </Paper>
