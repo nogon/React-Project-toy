@@ -5,6 +5,9 @@
 # database 설정
 /dbconnection.json
 
+# upload 폴더 설정
+/upload
+
 # dependencies
 /node_modules
 /.pnp
