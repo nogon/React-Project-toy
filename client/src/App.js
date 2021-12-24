@@ -34,10 +34,30 @@ class App extends React.Component {
 
   // 서버에 접속해서 데이터 가져오기
   // state는 React.Component 내에서 변경될 수 있는 변수를 처리하고자 할 때 사용
-  state = {
-    customers: "",
-    completed: 0
+  // state 초기화 변수
+  // state = {
+  //   customers: "",
+  //   completed: 0
+  // }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      customers: '',
+      completed: 0
+    }
   }
+
+  stateRefresh = () => {
+    this.setState({
+      customers: '',
+      completed: 0
+    });
+    this.callApi()
+      .then(res => this.setState({customer: res}))
+      .catch(err => console.log(err));
+  }
+
   /*
     component lifeCicle
     1. constructor() -> 2. componentWillMount() -> 3. render() -> 4. componentDidMount()
@@ -102,7 +122,8 @@ class App extends React.Component {
             </TableBody>
           </Table>
         </Paper>
-        <CustomerAdd />
+        {/* props값으로 stateRefresh를 설정. 함수 자체를 props 형태로 보내주는 것.  */}
+        <CustomerAdd stateRefresh={this.stateRefresh}/>
       </div>
     )
   }

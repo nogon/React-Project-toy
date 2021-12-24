@@ -21,6 +21,9 @@ class CustomerAdd extends React.Component {
         this.addCustomer()
             .then((response) => {
                 console.log('---->',response.data);
+                // App.js에 있는 stateRefresh 불러오기
+                // (고객 목록을 불러오는 과정은 비동기적이라 서버로부터 고객을 추가한 이후에 응답을 받고 나서 refresh 하도록 설정)
+                this.props.stateRefresh();
             })
         this.setState({
             file: null,
@@ -30,7 +33,7 @@ class CustomerAdd extends React.Component {
             job: '',
             fileName: ''
         })
-        window.location.reload();
+        // window.location.reload();
     }
 
     handleFileChange = (e) => {
