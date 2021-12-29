@@ -54,7 +54,10 @@ class App extends React.Component {
       completed: 0
     });
     this.callApi()
-      .then(res => this.setState({customer: res}))
+      .then(res => {
+        this.setState({customers: res});
+        console.log('stateRefresh res --- ', res);
+      })
       .catch(err => console.log(err));
   }
 
@@ -63,6 +66,7 @@ class App extends React.Component {
     1. constructor() -> 2. componentWillMount() -> 3. render() -> 4. componentDidMount()
     props or state가 변경될 경우 -> shouldComponentUpdate() -> view 자동 갱신
   */
+
   // api 서버에 접근하여 데이터를 받아오는 작업은 componentDidMount 함
   // 모든 컴포넌트가 mount가 완료되었을때 실행됨.
   componentDidMount() {
@@ -97,10 +101,11 @@ class App extends React.Component {
                 <TableCell>생년월일</TableCell>
                 <TableCell>성별</TableCell>
                 <TableCell>직업</TableCell>
+                <TableCell>설정</TableCell>
               </TableRow>
             </TableHead>
 
-            <TableBody>
+            {/* <TableBody>
             { this.state.customers ? this.state.customers.map(c => (
               <TableRow key={c.id}>
                 <TableCell>{c.id}</TableCell>
@@ -109,11 +114,15 @@ class App extends React.Component {
                 <TableCell>{c.birth}</TableCell>
                 <TableCell>{c.gender}</TableCell>
                 <TableCell>{c.job}</TableCell>
-                  {/* <Customer key={c.id}
-                    id={c.id} img={c.img} name={c.name} birth={c.birth} gender={c.gender} job={c.job}
-                  /> */}
               </TableRow>
-            )) :
+            )) : */}
+            
+            <TableBody>
+              {this.state.customers ? this.state.customers.map(c => {
+                return(
+                  <Customer stateRefresh={this.stateRefresh} key={c.id}
+                    id={c.id} img={c.img} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />)
+              }) :
               <TableRow>
                   <TableCell colSpan={6} align='center'>
                     <CircularProgress className={classes.progress} variant='determinate' value={this.state.completed} />
@@ -123,7 +132,7 @@ class App extends React.Component {
           </Table>
         </Paper>
         {/* props값으로 stateRefresh를 설정. 함수 자체를 props 형태로 보내주는 것.  */}
-        <CustomerAdd stateRefresh={this.stateRefresh}/>
+        <CustomerAdd stateRefresh={this.stateRefresh} />
       </div>
     )
   }

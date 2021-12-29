@@ -8,7 +8,7 @@ import CustomerDelete from './CustomerDelete';
 // Customer Class 정의하기. React에 Component 형태로 작성된 Class
 class Customer extends React.Component {
     render() {
-        const name = this.props.name;
+        //const name = this.props.name;
         return  (
             // <div>
             //     <CustomerProfile id={this.props.id} img={this.props.img} name={this.props.name} />
@@ -21,7 +21,7 @@ class Customer extends React.Component {
                     <TableCell>{this.props.birth}</TableCell>
                     <TableCell>{this.props.gender}</TableCell>
                     <TableCell>{this.props.job}</TableCell>
-                    <TableCell><CustomerDelete id={this.props.id} steteRefresh={this.props.steteRefresh} /></TableCell>
+                    <TableCell><CustomerDelete stateRefresh={this.props.stateRefresh} id={this.props.id} /></TableCell>
                 </TableRow>
 
             // </div>

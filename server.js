@@ -29,7 +29,7 @@ const upload = multer({dest: './upload'})
 //app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/api/customers', (req, res) => {
-    connection.query('SELECT * FROM toy.user',
+    connection.query('SELECT * FROM toy.user WHERE isDeleted = 0',
     (err, rows) => {
         if(!err) {
             res.send(rows);
@@ -46,7 +46,7 @@ app.get('/api/customers', (req, res) => {
 app.use('/image', express.static('./upload'));
 
 app.post('/api/customers', upload.single('img'), (req, res) => {
-    let sql = 'INSERT INTO toy.user VALUES (null, ?, ?, ?, ?, ?)';
+    let sql = 'INSERT INTO toy.user VALUES (null, ?, ?, ?, ?, ?, now(), 0)';
     let img = 'http://localhost:5000/image/' + req.file.filename;
     let name = req.body.name;
     let birth = req.body.birth;
@@ -59,6 +59,14 @@ app.post('/api/customers', upload.single('img'), (req, res) => {
     })
 });
 
+app.delete('/api/customers/:id', (req, res) => {
+    let sql = 'UPDATE toy.user SET isDeleted = 1 WHERE id = ?';
+    let params = [req.params.id];
+
+    connection.query(sql, params, (err, rows, fields) => {
+        res.send(rows);
+    })
+});
 
 app.listen(port, (err) => {
     if(err) return console.log(err);
