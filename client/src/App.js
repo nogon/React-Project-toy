@@ -113,14 +113,16 @@ class App extends React.Component {
     super(props);
     this.state = {
       customers: '',
-      completed: 0
+      completed: 0,
+      searchKeyword: ''
     }
   }
 
   stateRefresh = () => {
     this.setState({
       customers: '',
-      completed: 0
+      completed: 0,
+      searchKeyword: '' // searchKeyword 초기화
     });
     this.callApi()
       .then(res => {
@@ -156,9 +158,25 @@ class App extends React.Component {
     this.setState({completed: completed >= 100 ? 0 : completed + 1});
   }
 
+  handleValueChange = (e) => {
+    let nextState = {};
+    nextState[e.target.name] = e.target.value;
+    this.setState(nextState);
+  }
+
   render() {
     const { classes } = this.props;
     const cellList = ["번호","사진","이름","생년월일","성별","직업","설정"];
+    const filteredComponent = (data) => {
+      // 매개변수에 filter를 적용. 그 데이터가 배열 형태로 존재한다고 했을때(c) 각 원소 중의 .name 에서 사용자가 검색한 내용이 있으면 data에 넣기
+      data = data.filter((c) => {
+        return c.name.indexOf(this.state.searchKeyword) > -1;
+      });
+      // data를 map을 이용하여 각 원소를 출력
+      return data.map((c) => {
+        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} img={c.img} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />
+      })
+    }
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -184,6 +202,12 @@ class App extends React.Component {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
+                // 사용자가 입력한 문자열을 searchKeyword란 이름으로 관리
+                name='searchKeyword'
+                // 저장되어 있는 상태 값. 즉 searchKeyword를 담을 수 있도록
+                value={this.state.searchKeyword}
+                // 실제로 값이 변경되면 handleValueChange를 불러올 수 있도록 설정
+                onChange={this.handleValueChange}
                 inputProps={{ 'aria-label': 'search' }}
               />
             </div>
@@ -223,16 +247,23 @@ class App extends React.Component {
             )) : */}
             
             <TableBody>
-              {this.state.customers ? this.state.customers.map(c => {
-                return(
-                  <Customer stateRefresh={this.stateRefresh} key={c.id}
-                    id={c.id} img={c.img} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />)
-              }) :
+              {this.state.customers ?
+                // this.state.customers.map(c => {
+                //   return(
+                //     <Customer stateRefresh={this.stateRefresh} key={c.id}
+                //       id={c.id} img={c.img} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />
+                //   )
+                // })
+
+                // 윗 부분을 함수 형태로 따로 명시. 필터를 수행한 고객 데이터가 출력될 수 있도록
+                filteredComponent(this.state.customers)
+              :
               <TableRow>
                   <TableCell colSpan={6} align='center'>
                     <CircularProgress className={classes.progress} variant='determinate' value={this.state.completed} />
                   </TableCell>
-              </TableRow>}
+              </TableRow>
+              }
             </TableBody>
           </Table>
         </Paper>
